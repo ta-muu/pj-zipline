@@ -1,5 +1,6 @@
 import { index, layout, type RouteConfig } from "@react-router/dev/routes";
 
 export default [
-	layout("./routes/layout.tsx", [index("./routes/taskview.tsx")]),
+	index("./routes/home.tsx"),
+	index("./routes/taskview.tsx"),
 ] satisfies RouteConfig;
