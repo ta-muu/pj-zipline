@@ -1,0 +1,11 @@
+name: CodeRabbit
+
+on: [pull_request]
+
+jobs:
+  coderabbit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: coderabbitai/coderabbit-action@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
