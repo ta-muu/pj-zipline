@@ -77,11 +77,13 @@ const TaskStatusEditModal: React.FC<TaskStatusEditModalProps> = ({
 						onChange={handleStatusChange}
 						label="状態"
 					>
-						{(["todo", "in_progress", "done"] as const).map((status) => (
-							<MenuItem key={status} value={status}>
-								{statusToJapanese(status)}
-							</MenuItem>
-						))}
+						{(["todo", "in_progress", "done", "hold", "waiting"] as const).map(
+							(status) => (
+								<MenuItem key={status} value={status}>
+									{statusToJapanese(status)}
+								</MenuItem>
+							),
+						)}
 					</Select>
 				</FormControl>
 			</DialogContent>

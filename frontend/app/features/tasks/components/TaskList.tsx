@@ -197,6 +197,10 @@ const TaskList: React.FC = () => {
 													? "warning"
 													: task.status === "done"
 														? "success"
+													: task.status === "hold"
+														? "info"
+													: task.status === "waiting"
+														? "secondary"
 														: "default"
 											}
 											size="small"

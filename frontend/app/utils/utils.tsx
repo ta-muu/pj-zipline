@@ -8,6 +8,10 @@ export const statusToJapanese = (status: Task["status"]) => {
 			return "作業中";
 		case "done":
 			return "完了";
+		case "hold":
+			return "保留";
+		case "waiting":
+			return "待ち";
 		default:
 			return status;
 	}
