@@ -18,7 +18,7 @@ import {
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useApi } from "../../../hooks/useApi";
-import { statusToJapanese, statusColor } from "../../../utils/utils";
+import { statusColor, statusToJapanese } from "../../../utils/utils";
 import { getTasks } from "../api/get-tasks";
 import type { Task } from "../types";
 import TaskDescriptionModal from "./TaskDescriptionModal";
