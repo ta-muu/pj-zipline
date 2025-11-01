@@ -8,6 +8,8 @@ class Task(models.Model):
         ('todo', 'To Do'),
         ('in_progress', 'In Progress'),
         ('done', 'Done'),
+        ('hold', 'On Hold'),
+        ('waiting', 'Waiting'),
     ]
 
     title = models.CharField(max_length=255, help_text="The title of the task.")
@@ -39,3 +41,5 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+    

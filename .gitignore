@@ -1,8 +1,40 @@
+# General ignores
 .DS_Store
 */.DS_Store
 .env
+.env.local
+.env.*
 *.log
-db.sqlite3
 
-__pycache__/*
+# Python ignores
+__pycache__/
 *.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+/htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+celerybeat-schedule
+
+# Django ignores
+db.sqlite3
+/media/
+/static/
+
+# Node.js / Frontend ignores
+node_modules/
+/dist/
+/build/
+/.vite/
+/.react-router/
+/coverage/
+
+# IDE ignores
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
