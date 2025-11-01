@@ -271,7 +271,7 @@ const TaskList: React.FC = () => {
 						) : (
 							<TableRow>
 								<TableCell
-									colSpan={7}
+									colSpan={6}
 									align="center"
 									sx={{
 										color: theme.palette.text.primary,

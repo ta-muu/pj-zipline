@@ -82,7 +82,7 @@ const TaskGraph = () => {
 						source: depId.toString(),
 						target: task.id.toString(),
 						animated: false,
-						label: task.estimated_effort ? `${task.estimated_effort}人日` : "",
+						label: task.estimated_effort ? `${task.estimated_effort}h` : "",
 						markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20 },
 					});
 				});
