@@ -16,7 +16,7 @@ import {
 	useTheme,
 } from "@mui/material";
 import type React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useApi } from "../../../hooks/useApi";
 import { statusToJapanese } from "../../../utils/utils";
 import { getTasks } from "../api/get-tasks";
@@ -37,8 +37,15 @@ const TaskList: React.FC = () => {
 		useState<Task | null>(null);
 	const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
+	const taskMap = useMemo(
+		() => new Map(tasks?.map((t) => [t.id, t]) ?? []),
+		[tasks],
+	);
+
 	useEffect(() => {
-		fetchTasks();
+		fetchTasks().catch(() => {
+			// useApi が error state を管理するため、ここでは追加処理不要
+		});
 	}, [fetchTasks]);
 
 	const handleEditClick = (task: Task) => {
@@ -49,7 +56,9 @@ const TaskList: React.FC = () => {
 	const handleModalClose = () => {
 		setIsModalOpen(false);
 		setEditingTask(null);
-		fetchTasks(); // モーダルを閉じたらタスクを再取得
+		fetchTasks().catch(() => {
+			// useApi が error state を管理するため、ここでは追加処理不要
+		});
 	};
 
 	const handleStatusClick = (task: Task) => {
@@ -60,7 +69,9 @@ const TaskList: React.FC = () => {
 	const handleStatusModalClose = () => {
 		setIsStatusModalOpen(false);
 		setStatusEditingTask(null);
-		fetchTasks(); // モーダルを閉じたらタスクを再取得
+		fetchTasks().catch(() => {
+			// useApi が error state を管理するため、ここでは追加処理不要
+		});
 	};
 
 	const handleDescriptionClick = (task: Task) => {
@@ -71,7 +82,9 @@ const TaskList: React.FC = () => {
 	const handleDescriptionModalClose = () => {
 		setIsDescriptionModalOpen(false);
 		setDescriptionEditingTask(null);
-		fetchTasks(); // モーダルを閉じたらタスクを再取得
+		fetchTasks().catch(() => {
+			// useApi が error state を管理するため、ここでは追加処理不要
+		});
 	};
 
 	if (loading && !tasks) {
@@ -220,17 +233,16 @@ const TaskList: React.FC = () => {
 										}}
 									>
 										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-											{tasks &&
-												task.dependencies.map((depId) => {
-													const depTask = tasks.find((t) => t.id === depId);
-													return (
-														<Chip
-															key={depId}
-															label={depTask?.title || `ID: ${depId}`}
-															size="small"
-														/>
-													);
-												})}
+											{task.dependencies.map((depId) => {
+												const depTask = taskMap.get(depId);
+												return (
+													<Chip
+														key={depId}
+														label={depTask?.title || `ID: ${depId}`}
+														size="small"
+													/>
+												);
+											})}
 										</Box>
 									</TableCell>
 									<TableCell
