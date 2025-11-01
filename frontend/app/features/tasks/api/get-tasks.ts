@@ -1,10 +1,10 @@
 import type { Task } from "../types";
 
 export const getTasks = async (): Promise<Task[]> => {
-	const backend_url = import.meta.env.VITE_BACKEND_URL;
-	console.log("Backend API URL:", backend_url);
 	try {
-		const response = await fetch(`${backend_url}/api/tasks/`);
+		const response = await fetch(
+			`${import.meta.env.VITE_BACKEND_URL}/api/tasks/`,
+		);
 		if (!response.ok) {
 			throw new Error("Network response was not ok");
 		}

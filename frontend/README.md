@@ -17,11 +17,18 @@ frontend/
 │   ├── features/                       : 機能ごとに分類されるファイル
 │   │   └── tasks/                      : タスク機能関連のファイル
 │   │       ├── api/                    : APIとの接続ロジック
+│   │       │   ├── create-task.ts      : タスク作成APIのロジック
 │   │       │   └── get-tasks.ts        : タスク取得APIのロジック
-│   │       └── components/             : 再利用可能なUIコンポーネント
-│   │           └── TaskList.tsx        : タスクリスト表示コンポーネント
+│   │       ├── components/             : 再利用可能なUIコンポーネント
+│   │       │   ├── TaskForm.tsx        : タスク登録・編集フォームコンポーネント
+│   │       │   ├── TaskList.tsx        : タスクリスト表示コンポーネント
+│   │       │   └── TaskGraph.tsx       : タスク依存関係グラフコンポーネント
+│   │       └── types.ts                : 型定義ファイル
 │   └── routes/                         : ルートコンポーネント
-│       └── home.tsx                    : ホームページのルートコンポーネント
+│       ├── graph.tsx                   : タスク依存関係グラフページ
+│       ├── taskform.tsx                : タスク登録ページ
+│       ├── home.tsx                    : ホームページのルートコンポーネント
+│       └── taskview.tsx                : タスク詳細ページ (仮)
 ├── node_modules/
 ├── public/
 ├── .dockerignore
