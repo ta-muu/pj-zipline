@@ -35,9 +35,9 @@ import {
 import type React from "react";
 import type React from "react";
 import { useCallback, useCallback, useEffect, useEffect, useState, useState } from "react";
+import { statusToJapanese } from "../../../utils/utils";
 import { getTasks, getTasks } from "../api/get-tasks";
 import type { Task } from "../types.ts";
-import { statusToJapanese } from "../../../utils/utils";
 import TaskDescriptionModal from "./TaskDescriptionModal";
 import TaskEditModal from "./TaskEditModal";
 import TaskStatusEditModal from "./TaskStatusEditModal";

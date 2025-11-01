@@ -67,7 +67,10 @@ const TaskGraph = () => {
 		const initialNodes: Node[] = fetchedTasks.map((task: Task) => ({
 			id: task.id.toString(),
 			data: { label: task.title, status: task.status },
-			style: task.status === "done" ? { backgroundColor: "#7c7b7b" } : { backgroundColor: "#f8f7f6" },
+			style:
+				task.status === "done"
+					? { backgroundColor: "#7c7b7b" }
+					: { backgroundColor: "#f8f7f6" },
 		}));
 
 		const initialEdges: Edge[] = [];

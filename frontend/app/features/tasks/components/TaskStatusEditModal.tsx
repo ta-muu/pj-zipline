@@ -12,9 +12,9 @@ import {
 } from "@mui/material";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { statusToJapanese } from "../../../utils/utils";
 import { updateTask } from "../api/update-task";
 import type { Task } from "../types.ts";
-import { statusToJapanese } from "../../../utils/utils";
 
 interface TaskStatusEditModalProps {
 	open: boolean;
