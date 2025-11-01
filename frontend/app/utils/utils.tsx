@@ -16,3 +16,18 @@ export const statusToJapanese = (status: Task["status"]) => {
 			return status;
 	}
 };
+
+export const statusColor = (status: Task["status"]) => {
+	switch (status) {
+		case "in_progress":
+			return "warning";
+		case "done":
+			return "success";
+		case "hold":
+			return "info";
+		case "waiting":
+			return "secondary";
+		default:
+			return "default";
+	}
+};

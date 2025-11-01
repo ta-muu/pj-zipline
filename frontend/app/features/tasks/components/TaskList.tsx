@@ -18,7 +18,7 @@ import {
 import type React from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useApi } from "../../../hooks/useApi";
-import { statusToJapanese } from "../../../utils/utils";
+import { statusToJapanese, statusColor } from "../../../utils/utils";
 import { getTasks } from "../api/get-tasks";
 import type { Task } from "../types";
 import TaskDescriptionModal from "./TaskDescriptionModal";
@@ -192,17 +192,7 @@ const TaskList: React.FC = () => {
 									>
 										<Chip
 											label={statusToJapanese(task.status)}
-											color={
-												task.status === "in_progress"
-													? "warning"
-													: task.status === "done"
-														? "success"
-													: task.status === "hold"
-														? "info"
-													: task.status === "waiting"
-														? "secondary"
-														: "default"
-											}
+											color={statusColor(task.status)}
 											size="small"
 											onClick={() => handleStatusClick(task)}
 										/>
