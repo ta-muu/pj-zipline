@@ -1,3 +1,4 @@
+import EditIcon from "@mui/icons-material/Edit";
 import {
 	Box,
 	Button,
@@ -14,7 +15,6 @@ import {
 	Typography,
 	useTheme,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { getTasks } from "../api/get-tasks";
@@ -213,7 +213,13 @@ const TaskList: React.FC = () => {
 									>
 										<Chip
 											label={statusToJapanese(task.status)}
-											color={task.status === "in_progress" ? "warning" : task.status === "done" ? "success" : "default"}
+											color={
+												task.status === "in_progress"
+													? "warning"
+													: task.status === "done"
+														? "success"
+														: "default"
+											}
 											size="small"
 											onClick={() => handleStatusClick(task)}
 										/>

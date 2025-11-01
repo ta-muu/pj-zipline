@@ -6,7 +6,7 @@ export const updateTask = async (
 ): Promise<Task> => {
 	try {
 		const response = await fetch(
-		`${import.meta.env.VITE_BACKEND_URL}/api/tasks/${id}/`,
+			`${import.meta.env.VITE_BACKEND_URL}/api/tasks/${id}/`,
 			{
 				method: "PATCH",
 				headers: {

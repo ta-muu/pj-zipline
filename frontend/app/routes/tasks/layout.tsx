@@ -1,4 +1,11 @@
-import { AppBar, Box, createTheme, ThemeProvider, useMediaQuery, CssBaseline } from "@mui/material";
+import {
+	AppBar,
+	Box,
+	CssBaseline,
+	createTheme,
+	ThemeProvider,
+	useMediaQuery,
+} from "@mui/material";
 import type React from "react";
 import { useMemo } from "react";
 import { Outlet } from "react-router-dom";

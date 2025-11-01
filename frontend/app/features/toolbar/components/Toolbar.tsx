@@ -1,9 +1,8 @@
-import { Toolbar, Button } from "@mui/material";
+import { Button, Toolbar } from "@mui/material";
 import type React from "react";
 import { Link } from "react-router-dom";
 
 const AppToolbar: React.FC = () => {
-
 	return (
 		<Toolbar>
 			<Button color="inherit" component={Link} to="taskview">
