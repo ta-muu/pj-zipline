@@ -220,16 +220,17 @@ const TaskList: React.FC = () => {
 										}}
 									>
 										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-											{tasks && task.dependencies.map((depId) => {
-												const depTask = tasks.find((t) => t.id === depId);
-												return (
-													<Chip
-														key={depId}
-														label={depTask?.title || `ID: ${depId}`}
-														size="small"
-													/>
-												);
-											})}
+											{tasks &&
+												task.dependencies.map((depId) => {
+													const depTask = tasks.find((t) => t.id === depId);
+													return (
+														<Chip
+															key={depId}
+															label={depTask?.title || `ID: ${depId}`}
+															size="small"
+														/>
+													);
+												})}
 										</Box>
 									</TableCell>
 									<TableCell
