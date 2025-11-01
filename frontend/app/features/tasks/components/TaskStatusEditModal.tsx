@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Button,
 	Dialog,
 	DialogActions,
@@ -12,6 +13,7 @@ import {
 } from "@mui/material";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { useApi } from "../../../hooks/useApi";
 import { statusToJapanese } from "../../../utils/utils";
 import { updateTask } from "../api/update-task";
 import type { Task } from "../types.ts";
@@ -28,6 +30,7 @@ const TaskStatusEditModal: React.FC<TaskStatusEditModalProps> = ({
 	task,
 }) => {
 	const [selectedStatus, setSelectedStatus] = useState<Task["status"]>("todo");
+	const { error, request: updateTaskStatus } = useApi(updateTask);
 
 	useEffect(() => {
 		if (task) {
@@ -37,14 +40,10 @@ const TaskStatusEditModal: React.FC<TaskStatusEditModalProps> = ({
 
 	const handleSave = async () => {
 		if (task) {
-			try {
-				await updateTask(task.id, {
-					status: selectedStatus,
-				});
-				onClose();
-			} catch (error) {
-				console.error("Failed to update task status:", error);
-			}
+			await updateTaskStatus(task.id, {
+				status: selectedStatus,
+			});
+			onClose();
 		}
 	};
 
@@ -60,6 +59,7 @@ const TaskStatusEditModal: React.FC<TaskStatusEditModalProps> = ({
 		<Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
 			<DialogTitle>状態の編集: {task.title}</DialogTitle>
 			<DialogContent>
+				{error && <Alert severity="error">{error}</Alert>}
 				<FormControl sx={{ mt: 2, width: "100%" }}>
 					<InputLabel id="status-select-label">状態</InputLabel>
 					<Select

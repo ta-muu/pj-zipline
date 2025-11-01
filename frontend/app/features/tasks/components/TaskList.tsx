@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import type React from "react";
 import { useCallback, useEffect, useState } from "react";
+import { useApi } from "../../../hooks/useApi";
 import { statusToJapanese } from "../../../utils/utils";
 import { getTasks } from "../api/get-tasks";
 import type { Task } from "../types.ts";
@@ -27,9 +28,7 @@ import TaskStatusEditModal from "./TaskStatusEditModal";
 const TaskList: React.FC = () => {
 	const theme = useTheme();
 
-	const [tasks, setTasks] = useState<Task[]>([]);
-	const [loading, setLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string | null>(null);
+	const { data: tasks, loading, error, request: fetchTasks } = useApi(getTasks);
 	const [editingTask, setEditingTask] = useState<Task | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [statusEditingTask, setStatusEditingTask] = useState<Task | null>(null);
@@ -37,20 +36,6 @@ const TaskList: React.FC = () => {
 	const [descriptionEditingTask, setDescriptionEditingTask] =
 		useState<Task | null>(null);
 	const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
-
-	const fetchTasks = useCallback(async () => {
-		try {
-			setLoading(true);
-			const data = await getTasks();
-			setTasks(data);
-		} catch (err) {
-			setError(
-				err instanceof Error ? err.message : "An unknown error occurred",
-			);
-		} finally {
-			setLoading(false);
-		}
-	}, []);
 
 	useEffect(() => {
 		fetchTasks();
@@ -89,7 +74,7 @@ const TaskList: React.FC = () => {
 		fetchTasks(); // モーダルを閉じたらタスクを再取得
 	};
 
-	if (loading && tasks.length === 0) {
+	if (loading && !tasks) {
 		return (
 			<Box
 				display="flex"
@@ -180,7 +165,7 @@ const TaskList: React.FC = () => {
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{tasks.length > 0 ? (
+						{tasks && tasks.length > 0 ? (
 							tasks.map((task) => (
 								<TableRow key={task.id}>
 									<TableCell
@@ -235,7 +220,7 @@ const TaskList: React.FC = () => {
 										}}
 									>
 										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-											{task.dependencies.map((depId) => {
+											{tasks && task.dependencies.map((depId) => {
 												const depTask = tasks.find((t) => t.id === depId);
 												return (
 													<Chip
@@ -289,7 +274,7 @@ const TaskList: React.FC = () => {
 				open={isModalOpen}
 				onClose={handleModalClose}
 				task={editingTask}
-				allTasks={tasks}
+				allTasks={tasks || []}
 			/>
 			<TaskStatusEditModal
 				open={isStatusModalOpen}

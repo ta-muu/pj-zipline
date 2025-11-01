@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Button,
 	Dialog,
 	DialogActions,
@@ -8,6 +9,7 @@ import {
 } from "@mui/material";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { useApi } from "../../../hooks/useApi";
 import { updateTask } from "../api/update-task";
 import type { Task } from "../types.ts";
 
@@ -23,6 +25,7 @@ const TaskDescriptionModal: React.FC<TaskDescriptionModalProps> = ({
 	task,
 }) => {
 	const [editedDescription, setEditedDescription] = useState("");
+	const { error, request: updateTaskDescription } = useApi(updateTask);
 
 	useEffect(() => {
 		if (task) {
@@ -32,14 +35,10 @@ const TaskDescriptionModal: React.FC<TaskDescriptionModalProps> = ({
 
 	const handleSave = async () => {
 		if (task) {
-			try {
-				await updateTask(task.id, {
-					description: editedDescription,
-				});
-				onClose();
-			} catch (error) {
-				console.error("Failed to update task description:", error);
-			}
+			await updateTaskDescription(task.id, {
+				description: editedDescription,
+			});
+			onClose();
 		}
 	};
 
@@ -51,6 +50,7 @@ const TaskDescriptionModal: React.FC<TaskDescriptionModalProps> = ({
 		<Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
 			<DialogTitle>メモ: {task.title}</DialogTitle>
 			<DialogContent>
+				{error && <Alert severity="error">{error}</Alert>}
 				<TextField
 					autoFocus
 					margin="dense"
