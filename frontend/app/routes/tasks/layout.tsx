@@ -16,7 +16,7 @@ interface LayoutProps {
 	children: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = () => {
 	const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
 	const theme = useMemo(

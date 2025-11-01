@@ -1,38 +1,24 @@
-
 import DescriptionIcon from "@mui/icons-material/Description";
 import EditIcon from "@mui/icons-material/Edit";
 import {
 	Box,
-	Box,
-	Chip,
 	Chip,
 	CircularProgress,
-	CircularProgress,
-	IconButton,
 	IconButton,
 	Paper,
-	Paper,
-	Table,
 	Table,
 	TableBody,
-	TableBody,
-	TableCell,
 	TableCell,
 	TableContainer,
-	TableContainer,
-	TableHead,
 	TableHead,
 	TableRow,
-	TableRow,
 	Typography,
-	Typography,
-	useTheme,
 	useTheme,
 } from "@mui/material";
 import type React from "react";
-import { useCallback, useCallback, useEffect, useEffect, useState, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { statusToJapanese } from "../../../utils/utils";
-import { getTasks, getTasks } from "../api/get-tasks";
+import { getTasks } from "../api/get-tasks";
 import type { Task } from "../types.ts";
 import TaskDescriptionModal from "./TaskDescriptionModal";
 import TaskEditModal from "./TaskEditModal";
@@ -102,7 +88,6 @@ const TaskList: React.FC = () => {
 		setDescriptionEditingTask(null);
 		fetchTasks(); // モーダルを閉じたらタスクを再取得
 	};
-
 
 	if (loading && tasks.length === 0) {
 		return (
