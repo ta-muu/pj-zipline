@@ -1,24 +1,44 @@
+import DescriptionIcon from "@mui/icons-material/Description";
+import DescriptionIcon from "@mui/icons-material/Description";
+import EditIcon from "@mui/icons-material/Edit";
 import EditIcon from "@mui/icons-material/Edit";
 import {
 	Box,
+	Box,
+	Button,
 	Button,
 	Chip,
+	Chip,
+	CircularProgress,
 	CircularProgress,
 	IconButton,
+	IconButton,
+	Paper,
 	Paper,
 	Table,
+	Table,
+	TableBody,
 	TableBody,
 	TableCell,
+	TableCell,
+	TableContainer,
 	TableContainer,
 	TableHead,
+	TableHead,
+	TableRow,
 	TableRow,
 	Typography,
+	Typography,
+	useTheme,
 	useTheme,
 } from "@mui/material";
 import type React from "react";
-import { useCallback, useEffect, useState } from "react";
-import { getTasks } from "../api/get-tasks";
+import type React from "react";
+import { useCallback, useCallback, useEffect, useEffect, useState, useState } from "react";
+import { getTasks, getTasks } from "../api/get-tasks";
 import type { Task } from "../types.ts";
+import { statusToJapanese } from "../../../utils/utils";
+import TaskDescriptionModal from "./TaskDescriptionModal";
 import TaskEditModal from "./TaskEditModal";
 import TaskStatusEditModal from "./TaskStatusEditModal";
 
@@ -32,6 +52,9 @@ const TaskList: React.FC = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [statusEditingTask, setStatusEditingTask] = useState<Task | null>(null);
 	const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+	const [descriptionEditingTask, setDescriptionEditingTask] =
+		useState<Task | null>(null);
+	const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
 	const fetchTasks = useCallback(async () => {
 		try {
@@ -73,18 +96,17 @@ const TaskList: React.FC = () => {
 		fetchTasks(); // モーダルを閉じたらタスクを再取得
 	};
 
-	const statusToJapanese = (status: Task["status"]) => {
-		switch (status) {
-			case "todo":
-				return "未着手";
-			case "in_progress":
-				return "作業中";
-			case "done":
-				return "完了";
-			default:
-				return status;
-		}
+	const handleDescriptionClick = (task: Task) => {
+		setDescriptionEditingTask(task);
+		setIsDescriptionModalOpen(true);
 	};
+
+	const handleDescriptionModalClose = () => {
+		setIsDescriptionModalOpen(false);
+		setDescriptionEditingTask(null);
+		fetchTasks(); // モーダルを閉じたらタスクを再取得
+	};
+
 
 	if (loading && tasks.length === 0) {
 		return (
@@ -129,17 +151,10 @@ const TaskList: React.FC = () => {
 								sx={{
 									color: theme.palette.text.primary,
 									borderBottom: `1px solid ${theme.palette.divider}`,
+									width: "25%",
 								}}
 							>
 								タスク
-							</TableCell>
-							<TableCell
-								sx={{
-									color: theme.palette.text.primary,
-									borderBottom: `1px solid ${theme.palette.divider}`,
-								}}
-							>
-								詳細
 							</TableCell>
 							<TableCell
 								sx={{
@@ -163,7 +178,7 @@ const TaskList: React.FC = () => {
 									borderBottom: `1px solid ${theme.palette.divider}`,
 								}}
 							>
-								予想所要時間
+								予想所要時間（h）
 							</TableCell>
 							<TableCell
 								sx={{
@@ -196,14 +211,6 @@ const TaskList: React.FC = () => {
 										}}
 									>
 										{task.title}
-									</TableCell>
-									<TableCell
-										sx={{
-											color: theme.palette.text.primary,
-											borderBottom: `1px solid ${theme.palette.divider}`,
-										}}
-									>
-										{task.description}
 									</TableCell>
 									<TableCell
 										sx={{
@@ -266,6 +273,12 @@ const TaskList: React.FC = () => {
 										}}
 									>
 										<IconButton
+											onClick={() => handleDescriptionClick(task)}
+											size="small"
+										>
+											<DescriptionIcon />
+										</IconButton>
+										<IconButton
 											onClick={() => handleEditClick(task)}
 											size="small"
 										>
@@ -301,6 +314,11 @@ const TaskList: React.FC = () => {
 				open={isStatusModalOpen}
 				onClose={handleStatusModalClose}
 				task={statusEditingTask}
+			/>
+			<TaskDescriptionModal
+				open={isDescriptionModalOpen}
+				onClose={handleDescriptionModalClose}
+				task={descriptionEditingTask}
 			/>
 		</Box>
 	);

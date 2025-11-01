@@ -67,7 +67,7 @@ const TaskGraph = () => {
 		const initialNodes: Node[] = fetchedTasks.map((task: Task) => ({
 			id: task.id.toString(),
 			data: { label: task.title, status: task.status },
-			style: task.status === "done" ? { backgroundColor: "#d3d3d3" } : {},
+			style: task.status === "done" ? { backgroundColor: "#7c7b7b" } : { backgroundColor: "#f8f7f6" },
 		}));
 
 		const initialEdges: Edge[] = [];
@@ -110,7 +110,19 @@ const TaskGraph = () => {
 						Number(params.source),
 					];
 					await updateTask(targetTask.id, { dependencies: newDependencies });
-					setEdges((eds) => addEdge(params, eds));
+					setEdges((eds) =>
+						addEdge(
+							{
+								...params,
+								markerEnd: {
+									type: MarkerType.ArrowClosed,
+									width: 20,
+									height: 20,
+								},
+							},
+							eds,
+						),
+					);
 				}
 			}
 		},

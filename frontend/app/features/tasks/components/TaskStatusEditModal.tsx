@@ -14,25 +14,13 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { updateTask } from "../api/update-task";
 import type { Task } from "../types.ts";
+import { statusToJapanese } from "../../../utils/utils";
 
 interface TaskStatusEditModalProps {
 	open: boolean;
 	onClose: () => void;
 	task: Task | null;
 }
-
-const statusToJapanese = (status: Task["status"]) => {
-	switch (status) {
-		case "todo":
-			return "未着手";
-		case "in_progress":
-			return "作業中";
-		case "done":
-			return "完了";
-		default:
-			return status;
-	}
-};
 
 const TaskStatusEditModal: React.FC<TaskStatusEditModalProps> = ({
 	open,

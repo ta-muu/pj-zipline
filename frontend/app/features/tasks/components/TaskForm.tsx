@@ -140,7 +140,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 					sx={formElementStyles}
 				/>
 				<TextField
-					label="予想所要時間(時間)"
+					label="予想所要時間（h）"
 					fullWidth
 					margin="normal"
 					type="number"

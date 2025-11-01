@@ -24,18 +24,18 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
 	task,
 }) => {
 	const [editedTitle, setEditedTitle] = useState("");
-	const [editedDescription, setEditedDescription] = useState("");
 	const [editedDueDate, setEditedDueDate] = useState<string | null>(null);
 	const [editedEstimatedEffort, setEditedEstimatedEffort] = useState<
-		string | null
+		number | null
 	>(null);
 
 	useEffect(() => {
 		if (task) {
 			setEditedTitle(task.title);
-			setEditedDescription(task.description);
 			setEditedDueDate(task.due_date);
-			setEditedEstimatedEffort(task.estimated_effort);
+			setEditedEstimatedEffort(
+				task.estimated_effort ? parseFloat(task.estimated_effort) : null,
+			);
 		}
 	}, [task]);
 
@@ -44,9 +44,10 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
 			try {
 				await updateTask(task.id, {
 					title: editedTitle,
-					description: editedDescription,
 					due_date: editedDueDate,
-					estimated_effort: editedEstimatedEffort,
+					estimated_effort: editedEstimatedEffort
+						? editedEstimatedEffort.toFixed(1)
+						: null,
 				});
 				onClose();
 			} catch (error) {
@@ -76,19 +77,6 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
 				/>
 				<TextField
 					margin="dense"
-					id="description"
-					label="詳細"
-					type="text"
-					fullWidth
-					multiline
-					rows={4}
-					variant="outlined"
-					value={editedDescription}
-					onChange={(e) => setEditedDescription(e.target.value)}
-					sx={{ mt: 2 }}
-				/>
-				<TextField
-					margin="dense"
 					id="due_date"
 					label="締切"
 					type="date"
@@ -102,13 +90,16 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
 					sx={{ mt: 2 }}
 				/>
 				<TextField
-					label="予想所要時間(時間)"
+					label="予想所要時間（h）"
 					fullWidth
 					margin="normal"
 					type="number"
 					value={editedEstimatedEffort || ""}
-					onChange={(e) => setEditedEstimatedEffort(e.target.value || null)}
+					onChange={(e) =>
+						setEditedEstimatedEffort(parseFloat(e.target.value) || null)
+					}
 					variant="outlined"
+					inputProps={{ step: "0.1" }}
 					sx={{ mt: 2 }}
 				/>
 			</DialogContent>
