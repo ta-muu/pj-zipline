@@ -1,5 +1,6 @@
 import DescriptionIcon from "@mui/icons-material/Description";
 import EditIcon from "@mui/icons-material/Edit";
+import MoveToInboxIcon from "@mui/icons-material/MoveToInbox";
 import {
 	Box,
 	Chip,
@@ -24,6 +25,7 @@ import type { Task } from "../types";
 import TaskDescriptionModal from "./TaskDescriptionModal";
 import TaskEditModal from "./TaskEditModal";
 import TaskStatusEditModal from "./TaskStatusEditModal";
+import TaskMoveModal from "./TaskMoveModal";
 
 const TaskList: React.FC = () => {
 	const theme = useTheme();
@@ -36,6 +38,9 @@ const TaskList: React.FC = () => {
 	const [descriptionEditingTask, setDescriptionEditingTask] =
 		useState<Task | null>(null);
 	const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+
+	const [movingTask, setMovingTask] = useState<Task | null>(null);
+	const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
 
 	const tableCellSx = useMemo(
 		() => ({
@@ -84,6 +89,16 @@ const TaskList: React.FC = () => {
 	const handleDescriptionModalClose = () => {
 		setIsDescriptionModalOpen(false);
 		setDescriptionEditingTask(null);
+	};
+
+	const handleMoveClick = (task: Task) => {
+		setMovingTask(task);
+		setIsMoveModalOpen(true);
+	};
+
+	const handleMoveModalClose = () => {
+		setIsMoveModalOpen(false);
+		setMovingTask(null);
 	};
 
 	if (loading && !tasks) {
@@ -189,7 +204,7 @@ const TaskList: React.FC = () => {
 											borderBottom: `1px solid ${theme.palette.divider}`,
 										}}
 									>
-										{task.title}
+										{task.id}:{task.title}
 									</TableCell>
 									<TableCell
 										sx={{
@@ -267,6 +282,13 @@ const TaskList: React.FC = () => {
 										>
 											<EditIcon />
 										</IconButton>
+										<IconButton
+											onClick={() => handleMoveClick(task)}
+											size="small"
+											aria-label="タスクを移動"
+										>
+											<MoveToInboxIcon />
+										</IconButton>
 									</TableCell>
 								</TableRow>
 							))
@@ -305,6 +327,13 @@ const TaskList: React.FC = () => {
 				onClose={handleDescriptionModalClose}
 				onSave={() => fetchTasks().catch(() => {})}
 				task={descriptionEditingTask}
+			/>
+			<TaskMoveModal
+				open={isMoveModalOpen}
+				onClose={handleMoveModalClose}
+				onSave={() => fetchTasks().catch(() => {})}
+				task={movingTask}
+				allTasks={tasks || []}
 			/>
 		</Box>
 	);

@@ -31,3 +31,28 @@ export const statusColor = (status: Task["status"]) => {
 			return "default";
 	}
 };
+			
+export const getTaskIdFromPath = (taskPath: string, allTasks: Task[]): number | undefined => {
+const normalizedPath = taskPath.endsWith('/') ? taskPath.slice(0, -1) : taskPath;
+
+for (const task of allTasks) {
+	const pathComponents: string[] = [task.title];
+	let currentTask = task;
+	while (currentTask.parent_task) {
+		const parentTask = allTasks.find(t => t.id === currentTask.parent_task);
+		if (parentTask) {
+			pathComponents.unshift(parentTask.title);
+			currentTask = parentTask;
+		} else {
+			// Parent task not found, break the loop
+			break;
+		}
+	}
+	const currentTaskPath = pathComponents.join('/');
+	if (currentTaskPath === normalizedPath) {
+		return task.id;
+	}
+}
+	return undefined;
+};
+
