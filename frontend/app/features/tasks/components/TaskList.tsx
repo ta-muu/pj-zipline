@@ -37,6 +37,11 @@ const TaskList: React.FC = () => {
 		useState<Task | null>(null);
 	const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
+	const tableCellSx = {
+		color: theme.palette.text.primary,
+		borderBottom: `1px solid ${theme.palette.divider}`,
+	};
+
 	const taskMap = useMemo(
 		() => new Map(tasks?.map((t) => [t.id, t]) ?? []),
 		[tasks],
@@ -128,8 +133,7 @@ const TaskList: React.FC = () => {
 						<TableRow>
 							<TableCell
 								sx={{
-									color: theme.palette.text.primary,
-									borderBottom: `1px solid ${theme.palette.divider}`,
+									...tableCellSx,
 									width: "25%",
 								}}
 							>
@@ -137,40 +141,35 @@ const TaskList: React.FC = () => {
 							</TableCell>
 							<TableCell
 								sx={{
-									color: theme.palette.text.primary,
-									borderBottom: `1px solid ${theme.palette.divider}`,
+									...tableCellSx,
 								}}
 							>
 								状態
 							</TableCell>
 							<TableCell
 								sx={{
-									color: theme.palette.text.primary,
-									borderBottom: `1px solid ${theme.palette.divider}`,
+									...tableCellSx,
 								}}
 							>
 								締切
 							</TableCell>
 							<TableCell
 								sx={{
-									color: theme.palette.text.primary,
-									borderBottom: `1px solid ${theme.palette.divider}`,
+									...tableCellSx,
 								}}
 							>
 								予想所要時間（h）
 							</TableCell>
 							<TableCell
 								sx={{
-									color: theme.palette.text.primary,
-									borderBottom: `1px solid ${theme.palette.divider}`,
+									...tableCellSx,
 								}}
 							>
 								前提タスク
 							</TableCell>
 							<TableCell
 								sx={{
-									color: theme.palette.text.primary,
-									borderBottom: `1px solid ${theme.palette.divider}`,
+									...tableCellSx,
 								}}
 							>
 								操作
@@ -254,12 +253,14 @@ const TaskList: React.FC = () => {
 										<IconButton
 											onClick={() => handleDescriptionClick(task)}
 											size="small"
+                      aria-label="説明を表示"
 										>
 											<DescriptionIcon />
 										</IconButton>
 										<IconButton
 											onClick={() => handleEditClick(task)}
 											size="small"
+                      aria-label="タスクを編集"
 										>
 											<EditIcon />
 										</IconButton>
