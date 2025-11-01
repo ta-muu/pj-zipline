@@ -36,12 +36,17 @@ const TaskDescriptionModal: React.FC<TaskDescriptionModalProps> = ({
 	}, [task]);
 
 	const handleSave = async () => {
-		if (task) {
+		if (!task) {
+			return;
+		}
+		try {
 			await updateTaskDescription(task.id, {
 				description: editedDescription,
 			});
 			onSave?.();
 			onClose();
+		} catch {
+			// useApi が error state を更新するため追加処理は不要
 		}
 	};
 

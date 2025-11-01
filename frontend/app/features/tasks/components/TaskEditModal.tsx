@@ -42,20 +42,21 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
 	}, [task]);
 
 	const handleSave = async () => {
-		if (task) {
-			try {
-				await updateTask(task.id, {
-					title: editedTitle,
-					due_date: editedDueDate,
-					estimated_effort: editedEstimatedEffort
-						? editedEstimatedEffort.toFixed(1)
-						: null,
-				});
-				onSave?.();
-				onClose();
-			} catch (error) {
-				console.error("Failed to update task:", error);
-			}
+		if (!task) {
+			return;
+		}
+		try {
+			await updateTask(task.id, {
+				title: editedTitle,
+				due_date: editedDueDate,
+				estimated_effort: editedEstimatedEffort
+					? editedEstimatedEffort.toFixed(1)
+					: null,
+			});
+			onSave?.();
+			onClose();
+		} catch {
+			// useApi が error state を更新するため追加処理は不要
 		}
 	};
 

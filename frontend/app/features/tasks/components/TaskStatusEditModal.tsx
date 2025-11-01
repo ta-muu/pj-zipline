@@ -41,12 +41,17 @@ const TaskStatusEditModal: React.FC<TaskStatusEditModalProps> = ({
 	}, [task]);
 
 	const handleSave = async () => {
-		if (task) {
+		if (!task) {
+			return;
+		}
+		try {
 			await updateTaskStatus(task.id, {
 				status: selectedStatus,
 			});
 			onSave?.();
 			onClose();
+		} catch {
+			// useApi が error state を更新するため追加処理は不要
 		}
 	};
 
