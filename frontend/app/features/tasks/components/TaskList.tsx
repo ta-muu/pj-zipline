@@ -1,12 +1,9 @@
+
 import DescriptionIcon from "@mui/icons-material/Description";
-import DescriptionIcon from "@mui/icons-material/Description";
-import EditIcon from "@mui/icons-material/Edit";
 import EditIcon from "@mui/icons-material/Edit";
 import {
 	Box,
 	Box,
-	Button,
-	Button,
 	Chip,
 	Chip,
 	CircularProgress,
@@ -32,7 +29,6 @@ import {
 	useTheme,
 	useTheme,
 } from "@mui/material";
-import type React from "react";
 import type React from "react";
 import { useCallback, useCallback, useEffect, useEffect, useState, useState } from "react";
 import { statusToJapanese } from "../../../utils/utils";

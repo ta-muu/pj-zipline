@@ -1,5 +1,5 @@
-import { Box, Button, CssBaseline } from "@mui/material";
-import { Link, Outlet } from "react-router-dom";
+import { Box } from "@mui/material";
+import { Outlet } from "react-router-dom";
 import TaskList from "../../features/tasks/components/TaskList";
 
 export default function TaskView() {
