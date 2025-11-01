@@ -159,6 +159,13 @@ const TaskList: React.FC = () => {
 									...tableCellSx,
 								}}
 							>
+								親タスク
+							</TableCell>
+							<TableCell
+								sx={{
+									...tableCellSx,
+								}}
+							>
 								前提タスク
 							</TableCell>
 							<TableCell
@@ -212,6 +219,14 @@ const TaskList: React.FC = () => {
 										}}
 									>
 										{task.estimated_effort || "未設定"}
+									</TableCell>
+									<TableCell
+										sx={{
+											color: theme.palette.text.primary,
+											borderBottom: `1px solid ${theme.palette.divider}`,
+										}}
+									>
+										{task.parent_task ? taskMap.get(task.parent_task)?.title : ""}
 									</TableCell>
 									<TableCell
 										sx={{
