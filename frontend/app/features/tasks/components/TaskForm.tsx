@@ -38,13 +38,22 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		onSubmit({
+		const taskData: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies"> = {
 			title,
 			description,
-			status,
 			due_date: dueDate || null,
 			estimated_effort: estimatedEffort || null,
-		});
+		};
+
+		if (initialData) {
+			// For editing existing tasks, include the status
+			taskData.status = status;
+		} else {
+			// For new task creation, default status to "todo"
+			taskData.status = "todo";
+		}
+
+		onSubmit(taskData);
 	};
 
 	const formElementStyles = {
@@ -105,27 +114,29 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 					variant="outlined"
 					sx={formElementStyles}
 				/>
-				<FormControl fullWidth margin="normal" sx={formElementStyles}>
-					<InputLabel id="status-label">ステータス</InputLabel>
-					<Select
-						labelId="status-label"
-						value={status}
-						label="ステータス"
-						onChange={(e) => setStatus(e.target.value as Task["status"])}
-						variant="outlined"
-						sx={formElementStyles}
-					>
-						<MenuItem value="todo" sx={menuItemStyles}>
-							未着手
-						</MenuItem>
-						<MenuItem value="in_progress" sx={menuItemStyles}>
-							作業中
-						</MenuItem>
-						<MenuItem value="done" sx={menuItemStyles}>
-							完了
-						</MenuItem>
-					</Select>
-				</FormControl>
+				{initialData && (
+					<FormControl fullWidth margin="normal" sx={formElementStyles}>
+						<InputLabel id="status-label">ステータス</InputLabel>
+						<Select
+							labelId="status-label"
+							value={status}
+							label="ステータス"
+							onChange={(e) => setStatus(e.target.value as Task["status"])}
+							variant="outlined"
+							sx={formElementStyles}
+						>
+							<MenuItem value="todo" sx={menuItemStyles}>
+								未着手
+							</MenuItem>
+							<MenuItem value="in_progress" sx={menuItemStyles}>
+								作業中
+							</MenuItem>
+							<MenuItem value="done" sx={menuItemStyles}>
+								完了
+							</MenuItem>
+						</Select>
+					</FormControl>
+				)}
 				<TextField
 					label="期日"
 					fullWidth
