@@ -253,14 +253,14 @@ const TaskList: React.FC = () => {
 										<IconButton
 											onClick={() => handleDescriptionClick(task)}
 											size="small"
-                      aria-label="説明を表示"
+											aria-label="説明を表示"
 										>
 											<DescriptionIcon />
 										</IconButton>
 										<IconButton
 											onClick={() => handleEditClick(task)}
 											size="small"
-                      aria-label="タスクを編集"
+											aria-label="タスクを編集"
 										>
 											<EditIcon />
 										</IconButton>

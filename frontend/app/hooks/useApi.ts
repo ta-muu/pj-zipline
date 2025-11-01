@@ -1,12 +1,14 @@
 import { useCallback, useState } from "react";
 
-export const useApi = <T>(apiCall: (...args: any[]) => Promise<T>) => {
+export const useApi = <T, A extends unknown[]>(
+	apiCall: (...args: A) => Promise<T>,
+) => {
 	const [data, setData] = useState<T | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const request = useCallback(
-		async (...args: any[]) => {
+		async (...args: A) => {
 			try {
 				setLoading(true);
 				const result = await apiCall(...args);
