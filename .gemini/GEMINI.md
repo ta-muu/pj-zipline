@@ -24,6 +24,5 @@
 # 禁止事項
 - npm, npxコマンドの実行
 - 以下のファイルの読み書き
-.env
-*/.env
-frontend/*
+  - .env
+  - */.env

@@ -1,23 +1,12 @@
 # 設計
 
-## 画面構成
-- タスク一覧画面に「グラフ表示」ボタンを追加する。
-- 「グラフ表示」ボタンをクリックすると、グラフ表示画面に遷移する。
-- グラフ表示画面には、タスクの依存関係が有向グラフで表示される。
+## 変更内容
 
-## 使用ライブラリ
-- グラフ描画ライブラリとして、`reactflow` を利用する。
+- `frontend/app/features/tasks/types.ts` の `Task` 型に `parent_task` プロパティを追加する。
+- `frontend/app/features/tasks/components/TaskList.tsx` を修正し、テーブルに「親タスク」の列を追加する。
+- 親タスクの列には、`parent_task` のタイトルを表示する。APIから取得する `parent_task` はIDのみであるため、タスクリスト全体の中からIDで検索してタイトルを取得する。
 
-## コンポーネント構成
-- `frontend/app/routes/tasks/graph.tsx`: グラフ表示画面のルートコンポーネント。
-- `frontend/app/features/tasks/components/TaskGraph.tsx`: グラフ描画コンポーネント。`reactflow`を使ってグラフを描画する。
+## 影響範囲
 
-## API
-- 既存のタスク取得API (`/api/tasks/`) を利用する。
-- `backend`の`Task`モデルに`dependencies`フィールドを追加し、タスク間の依存関係を表現できるようにする。
-
-## データフロー
-1. グラフ表示画面 (`graph.tsx`) がマウントされる。
-2. `get-tasks` を使用してタスクデータを取得する。
-3. 取得したタスクデータを `reactflow` が要求する形式 (ノードとエッジ) に変換する。
-4. 変換したデータを `TaskGraph.tsx` に渡し、グラフを描画する。
+- `frontend/app/features/tasks/types.ts`
+- `frontend/app/features/tasks/components/TaskList.tsx`

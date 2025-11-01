@@ -35,6 +35,14 @@ class Task(models.Model):
         blank=True,
         help_text="Tasks that this task depends on."
     )
+    parent_task = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='children',
+        help_text="The parent task of this task."
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

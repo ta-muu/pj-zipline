@@ -6,6 +6,7 @@ export type Task = {
 	due_date: string | null;
 	estimated_effort: string | null;
 	dependencies: number[];
+	parent_task: number | null;
 	created_at: string;
 	updated_at: string;
 };

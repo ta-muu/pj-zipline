@@ -166,8 +166,15 @@ const TaskList: React.FC = () => {
 									...tableCellSx,
 								}}
 							>
-								操作
+								親タスク
 							</TableCell>
+							<TableCell
+								sx={{
+									...tableCellSx,
+								}}
+							>
+								操作
+							</TableCell>{" "}
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -238,6 +245,17 @@ const TaskList: React.FC = () => {
 											borderBottom: `1px solid ${theme.palette.divider}`,
 										}}
 									>
+										{task.parent_task
+											? taskMap.get(task.parent_task)?.title ||
+												`ID: ${task.parent_task}`
+											: ""}
+									</TableCell>
+									<TableCell
+										sx={{
+											color: theme.palette.text.primary,
+											borderBottom: `1px solid ${theme.palette.divider}`,
+										}}
+									>
 										<IconButton
 											onClick={() => handleDescriptionClick(task)}
 											size="small"
@@ -258,7 +276,7 @@ const TaskList: React.FC = () => {
 						) : (
 							<TableRow>
 								<TableCell
-									colSpan={6}
+									colSpan={7}
 									align="center"
 									sx={{
 										color: theme.palette.text.primary,
