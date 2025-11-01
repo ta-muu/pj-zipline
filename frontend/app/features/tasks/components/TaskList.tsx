@@ -64,9 +64,6 @@ const TaskList: React.FC = () => {
 	const handleModalClose = () => {
 		setIsModalOpen(false);
 		setEditingTask(null);
-		fetchTasks().catch(() => {
-			// useApi が error state を管理するため、ここでは追加処理不要
-		});
 	};
 
 	const handleStatusClick = (task: Task) => {
@@ -77,9 +74,6 @@ const TaskList: React.FC = () => {
 	const handleStatusModalClose = () => {
 		setIsStatusModalOpen(false);
 		setStatusEditingTask(null);
-		fetchTasks().catch(() => {
-			// useApi が error state を管理するため、ここでは追加処理不要
-		});
 	};
 
 	const handleDescriptionClick = (task: Task) => {
@@ -90,9 +84,6 @@ const TaskList: React.FC = () => {
 	const handleDescriptionModalClose = () => {
 		setIsDescriptionModalOpen(false);
 		setDescriptionEditingTask(null);
-		fetchTasks().catch(() => {
-			// useApi が error state を管理するため、ここでは追加処理不要
-		});
 	};
 
 	if (loading && !tasks) {
@@ -290,17 +281,20 @@ const TaskList: React.FC = () => {
 			<TaskEditModal
 				open={isModalOpen}
 				onClose={handleModalClose}
+				onSave={() => fetchTasks().catch(() => {})}
 				task={editingTask}
 				allTasks={tasks || []}
 			/>
 			<TaskStatusEditModal
 				open={isStatusModalOpen}
 				onClose={handleStatusModalClose}
+				onSave={() => fetchTasks().catch(() => {})}
 				task={statusEditingTask}
 			/>
 			<TaskDescriptionModal
 				open={isDescriptionModalOpen}
 				onClose={handleDescriptionModalClose}
+				onSave={() => fetchTasks().catch(() => {})}
 				task={descriptionEditingTask}
 			/>
 		</Box>

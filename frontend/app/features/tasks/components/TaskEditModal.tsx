@@ -16,12 +16,14 @@ interface TaskEditModalProps {
 	onClose: () => void;
 	task: Task | null;
 	allTasks: Task[];
+	onSave?: () => void;
 }
 
 const TaskEditModal: React.FC<TaskEditModalProps> = ({
 	open,
 	onClose,
 	task,
+	onSave,
 }) => {
 	const [editedTitle, setEditedTitle] = useState("");
 	const [editedDueDate, setEditedDueDate] = useState<string | null>(null);
@@ -49,6 +51,7 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
 						? editedEstimatedEffort.toFixed(1)
 						: null,
 				});
+				onSave?.();
 				onClose();
 			} catch (error) {
 				console.error("Failed to update task:", error);

@@ -17,12 +17,14 @@ interface TaskDescriptionModalProps {
 	open: boolean;
 	onClose: () => void;
 	task: Task | null;
+	onSave?: () => void;
 }
 
 const TaskDescriptionModal: React.FC<TaskDescriptionModalProps> = ({
 	open,
 	onClose,
 	task,
+	onSave,
 }) => {
 	const [editedDescription, setEditedDescription] = useState("");
 	const { error, request: updateTaskDescription } = useApi(updateTask);
@@ -38,6 +40,7 @@ const TaskDescriptionModal: React.FC<TaskDescriptionModalProps> = ({
 			await updateTaskDescription(task.id, {
 				description: editedDescription,
 			});
+			onSave?.();
 			onClose();
 		}
 	};

@@ -22,12 +22,14 @@ interface TaskStatusEditModalProps {
 	open: boolean;
 	onClose: () => void;
 	task: Task | null;
+	onSave?: () => void;
 }
 
 const TaskStatusEditModal: React.FC<TaskStatusEditModalProps> = ({
 	open,
 	onClose,
 	task,
+	onSave,
 }) => {
 	const [selectedStatus, setSelectedStatus] = useState<Task["status"]>("todo");
 	const { error, request: updateTaskStatus } = useApi(updateTask);
@@ -43,6 +45,7 @@ const TaskStatusEditModal: React.FC<TaskStatusEditModalProps> = ({
 			await updateTaskStatus(task.id, {
 				status: selectedStatus,
 			});
+			onSave?.();
 			onClose();
 		}
 	};
