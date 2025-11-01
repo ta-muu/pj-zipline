@@ -36,19 +36,6 @@ const MenuProps = {
   },
 };
 
-const statusToJapanese = (status: Task["status"]) => {
-  switch (status) {
-    case "todo":
-      return "未着手";
-    case "in_progress":
-      return "作業中";
-    case "done":
-      return "完了";
-    default:
-      return status;
-  }
-};
-
 const TaskEditModal: React.FC<TaskEditModalProps> = ({
   open,
   onClose,
@@ -57,12 +44,10 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
 }) => {
   const [selectedDependencies, setSelectedDependencies] = useState<number[]>([]);
   const [availableTasks, setAvailableTasks] = useState<Task[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<Task["status"]>("todo");
 
   useEffect(() => {
     if (task) {
       setSelectedDependencies(task.dependencies || []);
-      setSelectedStatus(task.status);
 
       const getDescendants = (taskId: number): number[] => {
         const children = allTasks
@@ -81,7 +66,6 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
       try {
         await updateTask(task.id, {
           dependencies: selectedDependencies,
-          status: selectedStatus,
         });
         onClose();
       } catch (error) {
@@ -99,34 +83,14 @@ const TaskEditModal: React.FC<TaskEditModalProps> = ({
     );
   };
 
-  const handleStatusChange = (event: SelectChangeEvent<Task["status"]>) => {
-    setSelectedStatus(event.target.value as Task["status"]);
-  };
-
   if (!task) {
     return null;
   }
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>タスクの編集: {task.title}</DialogTitle>
+      <DialogTitle>前提タスクの編集: {task.title}</DialogTitle>
       <DialogContent>
-        <FormControl sx={{ mt: 2, width: "100%" }}>
-          <InputLabel id="status-select-label">状態</InputLabel>
-          <Select
-            labelId="status-select-label"
-            id="status-select"
-            value={selectedStatus}
-            onChange={handleStatusChange}
-            label="状態"
-          >
-            {(["todo", "in_progress", "done"] as const).map((status) => (
-              <MenuItem key={status} value={status}>
-                {statusToJapanese(status)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
         <FormControl sx={{ mt: 3, width: "100%" }}>
           <InputLabel id="dependencies-select-label">前提タスク</InputLabel>
           <Select

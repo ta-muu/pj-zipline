@@ -20,6 +20,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getTasks } from "../api/get-tasks";
 import type { Task } from "../types.ts";
 import TaskEditModal from "./TaskEditModal";
+import TaskStatusEditModal from "./TaskStatusEditModal";
 
 const TaskList: React.FC = () => {
 	const theme = useTheme();
@@ -29,6 +30,8 @@ const TaskList: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [editingTask, setEditingTask] = useState<Task | null>(null);
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [statusEditingTask, setStatusEditingTask] = useState<Task | null>(null);
+	const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
 
 	const fetchTasks = useCallback(async () => {
 		try {
@@ -56,6 +59,17 @@ const TaskList: React.FC = () => {
 	const handleModalClose = () => {
 		setIsModalOpen(false);
 		setEditingTask(null);
+		fetchTasks(); // モーダルを閉じたらタスクを再取得
+	};
+
+	const handleStatusClick = (task: Task) => {
+		setStatusEditingTask(task);
+		setIsStatusModalOpen(true);
+	};
+
+	const handleStatusModalClose = () => {
+		setIsStatusModalOpen(false);
+		setStatusEditingTask(null);
 		fetchTasks(); // モーダルを閉じたらタスクを再取得
 	};
 
@@ -201,6 +215,7 @@ const TaskList: React.FC = () => {
 											label={statusToJapanese(task.status)}
 											color={task.status === "in_progress" ? "warning" : task.status === "done" ? "success" : "default"}
 											size="small"
+											onClick={() => handleStatusClick(task)}
 										/>
 									</TableCell>
 									<TableCell
@@ -275,6 +290,11 @@ const TaskList: React.FC = () => {
 				onClose={handleModalClose}
 				task={editingTask}
 				allTasks={tasks}
+			/>
+			<TaskStatusEditModal
+				open={isStatusModalOpen}
+				onClose={handleStatusModalClose}
+				task={statusEditingTask}
 			/>
 		</Box>
 	);
