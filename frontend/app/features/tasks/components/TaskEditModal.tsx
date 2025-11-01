@@ -9,7 +9,7 @@ import {
 import type React from "react";
 import { useEffect, useState } from "react";
 import { updateTask } from "../api/update-task";
-import type { Task } from "../types.ts";
+import type { Task } from "../types";
 
 interface TaskEditModalProps {
 	open: boolean;

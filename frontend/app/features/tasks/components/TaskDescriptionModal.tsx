@@ -11,7 +11,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useApi } from "../../../hooks/useApi";
 import { updateTask } from "../api/update-task";
-import type { Task } from "../types.ts";
+import type { Task } from "../types";
 
 interface TaskDescriptionModalProps {
 	open: boolean;

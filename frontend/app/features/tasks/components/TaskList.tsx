@@ -20,7 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useApi } from "../../../hooks/useApi";
 import { statusToJapanese } from "../../../utils/utils";
 import { getTasks } from "../api/get-tasks";
-import type { Task } from "../types.ts";
+import type { Task } from "../types";
 import TaskDescriptionModal from "./TaskDescriptionModal";
 import TaskEditModal from "./TaskEditModal";
 import TaskStatusEditModal from "./TaskStatusEditModal";
@@ -37,10 +37,13 @@ const TaskList: React.FC = () => {
 		useState<Task | null>(null);
 	const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
-	const tableCellSx = {
-		color: theme.palette.text.primary,
-		borderBottom: `1px solid ${theme.palette.divider}`,
-	};
+	const tableCellSx = useMemo(
+		() => ({
+			color: theme.palette.text.primary,
+			borderBottom: `1px solid ${theme.palette.divider}`,
+		}),
+		[theme.palette.text.primary, theme.palette.divider],
+	);
 
 	const taskMap = useMemo(
 		() => new Map(tasks?.map((t) => [t.id, t]) ?? []),

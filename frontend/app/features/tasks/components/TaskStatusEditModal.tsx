@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { useApi } from "../../../hooks/useApi";
 import { statusToJapanese } from "../../../utils/utils";
 import { updateTask } from "../api/update-task";
-import type { Task } from "../types.ts";
+import type { Task } from "../types";
 
 interface TaskStatusEditModalProps {
 	open: boolean;
