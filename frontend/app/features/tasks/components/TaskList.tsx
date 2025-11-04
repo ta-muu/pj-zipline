@@ -27,7 +27,11 @@ import TaskEditModal from "./TaskEditModal";
 import TaskStatusEditModal from "./TaskStatusEditModal";
 import TaskMoveModal from "./TaskMoveModal";
 
-const TaskList: React.FC = () => {
+interface TaskListProps {
+	filterPath: string;
+}
+
+const TaskList: React.FC<TaskListProps> = ({ filterPath }) => {
 	const theme = useTheme();
 
 	const { data: tasks, loading, error, request: fetchTasks } = useApi(getTasks);
@@ -54,6 +58,14 @@ const TaskList: React.FC = () => {
 		() => new Map(tasks?.map((t) => [t.id, t]) ?? []),
 		[tasks],
 	);
+
+	const filteredTasks = useMemo(() => {
+		if (!tasks) return [];
+		if (!filterPath) return tasks;
+		return tasks.filter(task =>
+			task.task_path?.includes(filterPath)
+		);
+	}, [tasks, filterPath]);
 
 	useEffect(() => {
 		fetchTasks().catch(() => {
@@ -143,6 +155,13 @@ const TaskList: React.FC = () => {
 							<TableCell
 								sx={{
 									...tableCellSx,
+								}}
+							>
+								ID
+							</TableCell>
+							<TableCell
+								sx={{
+									...tableCellSx,
 									width: "25%",
 								}}
 							>
@@ -194,7 +213,7 @@ const TaskList: React.FC = () => {
 					</TableHead>
 					<TableBody>
 						{tasks && tasks.length > 0 ? (
-							tasks.map((task) => (
+							filteredTasks.map((task) => (
 								<TableRow key={task.id}>
 									<TableCell
 										component="th"
@@ -204,7 +223,17 @@ const TaskList: React.FC = () => {
 											borderBottom: `1px solid ${theme.palette.divider}`,
 										}}
 									>
-										{task.id}:{task.title}
+										{task.id}
+									</TableCell>
+									<TableCell
+										component="th"
+										scope="row"
+										sx={{
+											color: theme.palette.text.primary,
+											borderBottom: `1px solid ${theme.palette.divider}`,
+										}}
+									>
+										{task.title}
 									</TableCell>
 									<TableCell
 										sx={{

@@ -8,6 +8,7 @@ import {
 	InputLabel,
 	MenuItem,
 	Select,
+	TextField,
 } from "@mui/material";
 import React, { useState } from "react";
 import { updateTask } from "../api/update-task";
@@ -29,6 +30,7 @@ const TaskMoveModal: React.FC<TaskMoveModalProps> = ({
 	allTasks,
 }) => {
 	const [selectedParentTaskId, setSelectedParentTaskId] = useState<number | null>(null);
+	const [filterPath, setFilterPath] = useState("");
 
 	// Filter out the current task and its subtasks to prevent circular dependencies
 	const getSubtaskIds = (currentTask: Task, tasks: Task[]): Set<number> => {
@@ -51,8 +53,18 @@ const TaskMoveModal: React.FC<TaskMoveModalProps> = ({
 		if (!task) return [];
 		const invalidIds = getSubtaskIds(task, allTasks);
 		invalidIds.add(task.id); // Cannot be parent of itself
-		return allTasks.filter(t => !invalidIds.has(t.id));
-	}, [task, allTasks]);
+
+		const filtered = allTasks.filter(t => !invalidIds.has(t.id));
+
+		if (!filterPath) {
+			return filtered;
+		}
+
+		const lowerCaseFilterPath = filterPath.toLowerCase();
+		return filtered.filter(t =>
+			t.task_path?.toLowerCase().includes(lowerCaseFilterPath)
+		);
+	}, [task, allTasks, filterPath]);
 
 	React.useEffect(() => {
 		if (task) {
@@ -86,19 +98,31 @@ const TaskMoveModal: React.FC<TaskMoveModalProps> = ({
 		<Dialog open={open} onClose={onClose}>
 			<DialogTitle>タスクの移動</DialogTitle>
 			<DialogContent>
+				<TextField
+					autoFocus
+					margin="dense"
+					id="filterPath"
+					label="パスでフィルタ"
+					type="text"
+					fullWidth
+					variant="outlined"
+					value={filterPath}
+					onChange={(e) => setFilterPath(e.target.value)}
+					sx={{ mb: 2 }}
+				/>
 				<FormControl fullWidth margin="dense">
 					<InputLabel id="parent-task-select-label">新しい親タスク</InputLabel>
 					<Select
 						labelId="parent-task-select-label"
 						id="parent-task-select"
 						value={selectedParentTaskId === null ? "" : selectedParentTaskId}
-						label="新しい所属先タスク"
+						label="新しい親タスク"
 						onChange={(e) => setSelectedParentTaskId(e.target.value as number | null)}
 					>
 						<MenuItem value="">なし</MenuItem>
 						{validParentTasks.map((parentOption) => (
 							<MenuItem key={parentOption.id} value={parentOption.id}>
-								{parentOption.title}
+								{parentOption.id} – {parentOption.title}
 							</MenuItem>
 						))}
 					</Select>
