@@ -31,14 +31,15 @@ export const statusColor = (status: Task["status"]) => {
 			return "default";
 	}
 };
-			
-export const getTaskIdFromPath = (taskPath: string, allTasks: Task[]): number | undefined => {
 
-for (const task of allTasks) {
-	if (task.task_path === taskPath) {
-		return task.id;
+export const getTaskIdFromPath = (
+	taskPath: string,
+	allTasks: Task[],
+): number | undefined => {
+	for (const task of allTasks) {
+		if (task.task_path === taskPath) {
+			return task.id;
+		}
 	}
-}
 	return undefined;
 };
-

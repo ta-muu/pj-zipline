@@ -10,7 +10,7 @@ import {
 	Select,
 	TextField,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { updateTask } from "../api/update-task";
 import type { Task } from "../types";
 
@@ -29,42 +29,50 @@ const TaskMoveModal: React.FC<TaskMoveModalProps> = ({
 	task,
 	allTasks,
 }) => {
-	const [selectedParentTaskId, setSelectedParentTaskId] = useState<number | null>(null);
+	const [selectedParentTaskId, setSelectedParentTaskId] = useState<
+		number | null
+	>(null);
 	const [filterPath, setFilterPath] = useState("");
 
 	// Filter out the current task and its subtasks to prevent circular dependencies
-	const getSubtaskIds = (currentTask: Task, tasks: Task[]): Set<number> => {
-		const subtaskIds = new Set<number>();
-		const queue: Task[] = [currentTask];
-		let head = 0;
-		while (head < queue.length) {
-			const t = queue[head++];
-			subtaskIds.add(t.id);
-			for (const potentialSubtask of tasks) {
-				if (potentialSubtask.parent_task === t.id && !subtaskIds.has(potentialSubtask.id)) {
-					queue.push(potentialSubtask);
+	const getSubtaskIds = useCallback(
+		(currentTask: Task, tasks: Task[]): Set<number> => {
+			const subtaskIds = new Set<number>();
+			const queue: Task[] = [currentTask];
+			let head = 0;
+			while (head < queue.length) {
+				const t = queue[head++];
+				subtaskIds.add(t.id);
+				for (const potentialSubtask of tasks) {
+					if (
+						potentialSubtask.parent_task === t.id &&
+						!subtaskIds.has(potentialSubtask.id)
+					) {
+						queue.push(potentialSubtask);
+					}
 				}
 			}
-		}
-		return subtaskIds;
-	};
+			return subtaskIds;
+		},
+		[],
+	);
 
 	const validParentTasks = React.useMemo(() => {
 		if (!task) return [];
 		const invalidIds = getSubtaskIds(task, allTasks);
 		invalidIds.add(task.id); // Cannot be parent of itself
 
-		const filtered = allTasks.filter(t => !invalidIds.has(t.id));
+		const filtered = allTasks.filter((t) => !invalidIds.has(t.id));
 
 		if (!filterPath) {
 			return filtered;
 		}
 
 		const lowerCaseFilterPath = filterPath.toLowerCase();
-		return filtered.filter(t =>
-			t.task_path?.toLowerCase().includes(lowerCaseFilterPath)
+		return filtered.filter((t) =>
+			t.task_path?.toLowerCase().includes(lowerCaseFilterPath),
 		);
-	}, [task, allTasks, filterPath]);
+	}, [task, allTasks, filterPath, getSubtaskIds]);
 
 	React.useEffect(() => {
 		if (task) {
@@ -75,7 +83,7 @@ const TaskMoveModal: React.FC<TaskMoveModalProps> = ({
 	const handleSave = async () => {
 		if (!task) return;
 
-		let newParentTaskId: number | null = selectedParentTaskId;
+		const newParentTaskId: number | null = selectedParentTaskId;
 
 		const updatedTaskData: Partial<Task> = { parent_task: newParentTaskId };
 
@@ -117,7 +125,9 @@ const TaskMoveModal: React.FC<TaskMoveModalProps> = ({
 						id="parent-task-select"
 						value={selectedParentTaskId === null ? "" : selectedParentTaskId}
 						label="新しい親タスク"
-						onChange={(e) => setSelectedParentTaskId(e.target.value as number | null)}
+						onChange={(e) =>
+							setSelectedParentTaskId(e.target.value as number | null)
+						}
 					>
 						<MenuItem value="">なし</MenuItem>
 						{validParentTasks.map((parentOption) => (

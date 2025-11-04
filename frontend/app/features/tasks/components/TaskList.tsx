@@ -24,8 +24,8 @@ import { getTasks } from "../api/get-tasks";
 import type { Task } from "../types";
 import TaskDescriptionModal from "./TaskDescriptionModal";
 import TaskEditModal from "./TaskEditModal";
-import TaskStatusEditModal from "./TaskStatusEditModal";
 import TaskMoveModal from "./TaskMoveModal";
+import TaskStatusEditModal from "./TaskStatusEditModal";
 
 interface TaskListProps {
 	filterPath: string;
@@ -62,9 +62,7 @@ const TaskList: React.FC<TaskListProps> = ({ filterPath }) => {
 	const filteredTasks = useMemo(() => {
 		if (!tasks) return [];
 		if (!filterPath) return tasks;
-		return tasks.filter(task =>
-			task.task_path?.includes(filterPath)
-		);
+		return tasks.filter((task) => task.task_path?.includes(filterPath));
 	}, [tasks, filterPath]);
 
 	useEffect(() => {
@@ -270,7 +268,9 @@ const TaskList: React.FC<TaskListProps> = ({ filterPath }) => {
 											borderBottom: `1px solid ${theme.palette.divider}`,
 										}}
 									>
-										{task.parent_task ? taskMap.get(task.parent_task)?.title : ""}
+										{task.parent_task
+											? taskMap.get(task.parent_task)?.title
+											: ""}
 									</TableCell>
 									<TableCell
 										sx={{

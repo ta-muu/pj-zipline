@@ -38,7 +38,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		const taskData: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies"> = {
+		const taskData: Omit<
+			Task,
+			"id" | "created_at" | "updated_at" | "dependencies"
+		> = {
 			title,
 			description,
 			due_date: dueDate || null,
