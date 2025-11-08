@@ -1,5 +1,5 @@
 # コーディングの手順
-1. 要件を.gemini/.tmp/requirements.mdに書き出す。
+1. .idea/order.mdを元に、要件を.gemini/.tmp/requirements.mdに書き出す。
 2. 設計を.gemini/.tmp/design.mdに書き出す。
 3. 実装のために必要なタスクを.gemini/.tmp/task.mdに書き出す。
 4. 実装作業を始める前に作業者に差分を提示する。
@@ -26,4 +26,3 @@
 - 以下のファイルの読み書き
 .env
 */.env
-frontend/*

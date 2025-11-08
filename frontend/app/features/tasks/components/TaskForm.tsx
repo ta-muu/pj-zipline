@@ -19,9 +19,14 @@ interface TaskFormProps {
 		task: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies">,
 	) => void;
 	initialData?: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies">;
+	allTasks: Task[];
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
+const TaskForm: React.FC<TaskFormProps> = ({
+	onSubmit,
+	initialData,
+	allTasks,
+}) => {
 	const theme = useTheme();
 
 	const [title, setTitle] = useState(initialData?.title || "");
@@ -35,16 +40,33 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 	const [estimatedEffort, setEstimatedEffort] = useState(
 		initialData?.estimated_effort || "",
 	);
+	const [parentTask, setParentTask] = useState<number | "">(
+		initialData?.parent_task || "",
+	);
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		onSubmit({
+		const taskData: Omit<
+			Task,
+			"id" | "created_at" | "updated_at" | "dependencies"
+		> = {
 			title,
 			description,
-			status,
 			due_date: dueDate || null,
 			estimated_effort: estimatedEffort || null,
-		});
+			parent_task: parentTask === "" ? null : parentTask,
+			task_path: "", // task_path is assigned by the backend
+		};
+
+		if (initialData) {
+			// For editing existing tasks, include the status
+			taskData.status = status;
+		} else {
+			// For new task creation, default status to "todo"
+			taskData.status = "todo";
+		}
+
+		onSubmit(taskData);
 	};
 
 	const formElementStyles = {
@@ -105,25 +127,48 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 					variant="outlined"
 					sx={formElementStyles}
 				/>
+				{initialData && (
+					<FormControl fullWidth margin="normal" sx={formElementStyles}>
+						<InputLabel id="status-label">ステータス</InputLabel>
+						<Select
+							labelId="status-label"
+							value={status}
+							label="ステータス"
+							onChange={(e) => setStatus(e.target.value as Task["status"])}
+							variant="outlined"
+							sx={formElementStyles}
+						>
+							<MenuItem value="todo" sx={menuItemStyles}>
+								未着手
+							</MenuItem>
+							<MenuItem value="in_progress" sx={menuItemStyles}>
+								作業中
+							</MenuItem>
+							<MenuItem value="done" sx={menuItemStyles}>
+								完了
+							</MenuItem>
+						</Select>
+					</FormControl>
+				)}
 				<FormControl fullWidth margin="normal" sx={formElementStyles}>
-					<InputLabel id="status-label">ステータス</InputLabel>
+					<InputLabel id="parent-task-label">親タスク</InputLabel>
 					<Select
-						labelId="status-label"
-						value={status}
-						label="ステータス"
-						onChange={(e) => setStatus(e.target.value as Task["status"])}
+						labelId="parent-task-label"
+						value={parentTask}
+						label="親タスク"
+						onChange={(e) => setParentTask(e.target.value as number | "")}
 						variant="outlined"
-						sx={formElementStyles}
 					>
-						<MenuItem value="todo" sx={menuItemStyles}>
-							未着手
+						<MenuItem value="" sx={menuItemStyles}>
+							なし
 						</MenuItem>
-						<MenuItem value="in_progress" sx={menuItemStyles}>
-							作業中
-						</MenuItem>
-						<MenuItem value="done" sx={menuItemStyles}>
-							完了
-						</MenuItem>
+						{allTasks
+							.filter((task) => !initialData || task.id !== initialData.id)
+							.map((task) => (
+								<MenuItem key={task.id} value={task.id} sx={menuItemStyles}>
+									{task.id} – {task.title}
+								</MenuItem>
+							))}
 					</Select>
 				</FormControl>
 				<TextField

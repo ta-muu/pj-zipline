@@ -18,7 +18,14 @@ class Task(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default='todo',
-        help_text="The current status of the task."
+    )
+    parent_task = models.ForeignKey(
+        'self',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='sub_tasks',
+        verbose_name='親タスク'
     )
     due_date = models.DateField(blank=True, null=True, help_text="The due date for the task.")
     estimated_effort = models.DecimalField(
@@ -42,4 +49,5 @@ class Task(models.Model):
     def __str__(self):
         return self.title
 
-    
+    class Meta:
+        ordering = ['id']

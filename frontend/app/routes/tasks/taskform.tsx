@@ -1,7 +1,11 @@
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { createTask } from "../../features/tasks/api/create-task";
+import { getTasks } from "../../features/tasks/api/get-tasks";
 import TaskForm from "../../features/tasks/components/TaskForm";
 import type { Task } from "../../features/tasks/types";
+import { useApi } from "../../hooks/useApi";
 
 export function meta() {
 	return [
@@ -12,6 +16,13 @@ export function meta() {
 
 export default function TaskFormPage() {
 	const navigate = useNavigate();
+	const { data: tasks, loading, error, request: fetchTasks } = useApi(getTasks);
+
+	useEffect(() => {
+		fetchTasks().catch(() => {
+			// useApi will handle the error state
+		});
+	}, [fetchTasks]);
 
 	const handleSubmit = async (
 		newTask: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies">,
@@ -27,5 +38,31 @@ export default function TaskFormPage() {
 		}
 	};
 
-	return <TaskForm onSubmit={handleSubmit} />;
+	if (loading) {
+		return (
+			<Box
+				display="flex"
+				justifyContent="center"
+				alignItems="center"
+				minHeight="100vh"
+			>
+				<CircularProgress />
+			</Box>
+		);
+	}
+
+	if (error) {
+		return (
+			<Box
+				display="flex"
+				justifyContent="center"
+				alignItems="center"
+				minHeight="100vh"
+			>
+				<Typography color="error">エラー: {error}</Typography>
+			</Box>
+		);
+	}
+
+	return <TaskForm onSubmit={handleSubmit} allTasks={tasks || []} />;
 }

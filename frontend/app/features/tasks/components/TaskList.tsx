@@ -1,11 +1,15 @@
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DescriptionIcon from "@mui/icons-material/Description";
 import EditIcon from "@mui/icons-material/Edit";
+import MoveToInboxIcon from "@mui/icons-material/MoveToInbox";
 import {
+	Alert,
 	Box,
 	Chip,
 	CircularProgress,
 	IconButton,
 	Paper,
+	Snackbar,
 	Table,
 	TableBody,
 	TableCell,
@@ -23,9 +27,14 @@ import { getTasks } from "../api/get-tasks";
 import type { Task } from "../types";
 import TaskDescriptionModal from "./TaskDescriptionModal";
 import TaskEditModal from "./TaskEditModal";
+import TaskMoveModal from "./TaskMoveModal";
 import TaskStatusEditModal from "./TaskStatusEditModal";
 
-const TaskList: React.FC = () => {
+interface TaskListProps {
+	filterPath: string;
+}
+
+const TaskList: React.FC<TaskListProps> = ({ filterPath }) => {
 	const theme = useTheme();
 
 	const { data: tasks, loading, error, request: fetchTasks } = useApi(getTasks);
@@ -36,6 +45,15 @@ const TaskList: React.FC = () => {
 	const [descriptionEditingTask, setDescriptionEditingTask] =
 		useState<Task | null>(null);
 	const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+
+	const [movingTask, setMovingTask] = useState<Task | null>(null);
+	const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
+
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState("");
+	const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+		"success",
+	);
 
 	const tableCellSx = useMemo(
 		() => ({
@@ -49,6 +67,12 @@ const TaskList: React.FC = () => {
 		() => new Map(tasks?.map((t) => [t.id, t]) ?? []),
 		[tasks],
 	);
+
+	const filteredTasks = useMemo(() => {
+		if (!tasks) return [];
+		if (!filterPath) return tasks;
+		return tasks.filter((task) => task.task_path?.includes(filterPath));
+	}, [tasks, filterPath]);
 
 	useEffect(() => {
 		fetchTasks().catch(() => {
@@ -84,6 +108,34 @@ const TaskList: React.FC = () => {
 	const handleDescriptionModalClose = () => {
 		setIsDescriptionModalOpen(false);
 		setDescriptionEditingTask(null);
+	};
+
+	const handleMoveClick = (task: Task) => {
+		setMovingTask(task);
+		setIsMoveModalOpen(true);
+	};
+
+	const handleMoveModalClose = () => {
+		setIsMoveModalOpen(false);
+		setMovingTask(null);
+	};
+
+	const handleCopyClick = async (path: string) => {
+		try {
+			await navigator.clipboard.writeText(path);
+			setSnackbarMessage("パスをコピーしました。");
+			setSnackbarSeverity("success");
+			setSnackbarOpen(true);
+		} catch (err) {
+			console.error("Failed to copy: ", err);
+			setSnackbarMessage("パスのコピーに失敗しました。");
+			setSnackbarSeverity("error");
+			setSnackbarOpen(true);
+		}
+	};
+
+	const handleSnackbarClose = () => {
+		setSnackbarOpen(false);
 	};
 
 	if (loading && !tasks) {
@@ -128,6 +180,13 @@ const TaskList: React.FC = () => {
 							<TableCell
 								sx={{
 									...tableCellSx,
+								}}
+							>
+								ID
+							</TableCell>
+							<TableCell
+								sx={{
+									...tableCellSx,
 									width: "25%",
 								}}
 							>
@@ -159,6 +218,13 @@ const TaskList: React.FC = () => {
 									...tableCellSx,
 								}}
 							>
+								親タスク
+							</TableCell>
+							<TableCell
+								sx={{
+									...tableCellSx,
+								}}
+							>
 								前提タスク
 							</TableCell>
 							<TableCell
@@ -172,8 +238,18 @@ const TaskList: React.FC = () => {
 					</TableHead>
 					<TableBody>
 						{tasks && tasks.length > 0 ? (
-							tasks.map((task) => (
+							filteredTasks.map((task) => (
 								<TableRow key={task.id}>
+									<TableCell
+										component="th"
+										scope="row"
+										sx={{
+											color: theme.palette.text.primary,
+											borderBottom: `1px solid ${theme.palette.divider}`,
+										}}
+									>
+										{task.id}
+									</TableCell>
 									<TableCell
 										component="th"
 										scope="row"
@@ -219,6 +295,16 @@ const TaskList: React.FC = () => {
 											borderBottom: `1px solid ${theme.palette.divider}`,
 										}}
 									>
+										{task.parent_task
+											? taskMap.get(task.parent_task)?.title
+											: ""}
+									</TableCell>
+									<TableCell
+										sx={{
+											color: theme.palette.text.primary,
+											borderBottom: `1px solid ${theme.palette.divider}`,
+										}}
+									>
 										<Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
 											{task.dependencies.map((depId) => {
 												const depTask = taskMap.get(depId);
@@ -251,6 +337,20 @@ const TaskList: React.FC = () => {
 											aria-label="タスクを編集"
 										>
 											<EditIcon />
+										</IconButton>
+										<IconButton
+											onClick={() => handleMoveClick(task)}
+											size="small"
+											aria-label="タスクを移動"
+										>
+											<MoveToInboxIcon />
+										</IconButton>
+										<IconButton
+											onClick={() => handleCopyClick(task.task_path)}
+											size="small"
+											aria-label="パスをコピー"
+										>
+											<ContentCopyIcon />
 										</IconButton>
 									</TableCell>
 								</TableRow>
@@ -291,6 +391,26 @@ const TaskList: React.FC = () => {
 				onSave={() => fetchTasks().catch(() => {})}
 				task={descriptionEditingTask}
 			/>
+			<TaskMoveModal
+				open={isMoveModalOpen}
+				onClose={handleMoveModalClose}
+				onSave={() => fetchTasks().catch(() => {})}
+				task={movingTask}
+				allTasks={tasks || []}
+			/>
+			<Snackbar
+				open={snackbarOpen}
+				autoHideDuration={6000}
+				onClose={handleSnackbarClose}
+			>
+				<Alert
+					onClose={handleSnackbarClose}
+					severity={snackbarSeverity}
+					sx={{ width: "100%" }}
+				>
+					{snackbarMessage}
+				</Alert>
+			</Snackbar>
 		</Box>
 	);
 };

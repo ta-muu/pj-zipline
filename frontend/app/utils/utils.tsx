@@ -1,4 +1,4 @@
-import type { Task } from "../features/tasks/types.ts";
+import type { Task } from "../features/tasks/types";
 
 export const statusToJapanese = (status: Task["status"]) => {
 	switch (status) {
@@ -30,4 +30,16 @@ export const statusColor = (status: Task["status"]) => {
 		default:
 			return "default";
 	}
+};
+
+export const getTaskIdFromPath = (
+	taskPath: string,
+	allTasks: Task[],
+): number | undefined => {
+	for (const task of allTasks) {
+		if (task.task_path === taskPath) {
+			return task.id;
+		}
+	}
+	return undefined;
 };
