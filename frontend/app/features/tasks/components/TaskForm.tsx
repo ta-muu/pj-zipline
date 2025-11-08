@@ -18,10 +18,7 @@ interface TaskFormProps {
 	onSubmit: (
 		task: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies">,
 	) => void;
-	initialData?: Omit<
-		Task,
-		"id" | "created_at" | "updated_at" | "dependencies"
-	>;
+	initialData?: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies">;
 	allTasks: Task[];
 }
 
