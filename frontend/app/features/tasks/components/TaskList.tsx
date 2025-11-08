@@ -1,12 +1,15 @@
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DescriptionIcon from "@mui/icons-material/Description";
 import EditIcon from "@mui/icons-material/Edit";
 import MoveToInboxIcon from "@mui/icons-material/MoveToInbox";
 import {
+	Alert,
 	Box,
 	Chip,
 	CircularProgress,
 	IconButton,
 	Paper,
+	Snackbar,
 	Table,
 	TableBody,
 	TableCell,
@@ -45,6 +48,12 @@ const TaskList: React.FC<TaskListProps> = ({ filterPath }) => {
 
 	const [movingTask, setMovingTask] = useState<Task | null>(null);
 	const [isMoveModalOpen, setIsMoveModalOpen] = useState(false);
+
+	const [snackbarOpen, setSnackbarOpen] = useState(false);
+	const [snackbarMessage, setSnackbarMessage] = useState("");
+	const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
+		"success",
+	);
 
 	const tableCellSx = useMemo(
 		() => ({
@@ -109,6 +118,24 @@ const TaskList: React.FC<TaskListProps> = ({ filterPath }) => {
 	const handleMoveModalClose = () => {
 		setIsMoveModalOpen(false);
 		setMovingTask(null);
+	};
+
+	const handleCopyClick = async (path: string) => {
+		try {
+			await navigator.clipboard.writeText(path);
+			setSnackbarMessage("パスをコピーしました。");
+			setSnackbarSeverity("success");
+			setSnackbarOpen(true);
+		} catch (err) {
+			console.error("Failed to copy: ", err);
+			setSnackbarMessage("パスのコピーに失敗しました。");
+			setSnackbarSeverity("error");
+			setSnackbarOpen(true);
+		}
+	};
+
+	const handleSnackbarClose = () => {
+		setSnackbarOpen(false);
 	};
 
 	if (loading && !tasks) {
@@ -318,6 +345,13 @@ const TaskList: React.FC<TaskListProps> = ({ filterPath }) => {
 										>
 											<MoveToInboxIcon />
 										</IconButton>
+										<IconButton
+											onClick={() => handleCopyClick(task.task_path)}
+											size="small"
+											aria-label="パスをコピー"
+										>
+											<ContentCopyIcon />
+										</IconButton>
 									</TableCell>
 								</TableRow>
 							))
@@ -364,6 +398,19 @@ const TaskList: React.FC<TaskListProps> = ({ filterPath }) => {
 				task={movingTask}
 				allTasks={tasks || []}
 			/>
+			<Snackbar
+				open={snackbarOpen}
+				autoHideDuration={6000}
+				onClose={handleSnackbarClose}
+			>
+				<Alert
+					onClose={handleSnackbarClose}
+					severity={snackbarSeverity}
+					sx={{ width: "100%" }}
+				>
+					{snackbarMessage}
+				</Alert>
+			</Snackbar>
 		</Box>
 	);
 };
