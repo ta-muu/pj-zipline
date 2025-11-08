@@ -18,10 +18,18 @@ interface TaskFormProps {
 	onSubmit: (
 		task: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies">,
 	) => void;
-	initialData?: Omit<Task, "id" | "created_at" | "updated_at" | "dependencies">;
+	initialData?: Omit<
+		Task,
+		"id" | "created_at" | "updated_at" | "dependencies"
+	>;
+	allTasks: Task[];
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
+const TaskForm: React.FC<TaskFormProps> = ({
+	onSubmit,
+	initialData,
+	allTasks,
+}) => {
 	const theme = useTheme();
 
 	const [title, setTitle] = useState(initialData?.title || "");
@@ -35,6 +43,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 	const [estimatedEffort, setEstimatedEffort] = useState(
 		initialData?.estimated_effort || "",
 	);
+	const [parentTask, setParentTask] = useState<number | "">(
+		initialData?.parent_task || "",
+	);
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
@@ -46,6 +57,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 			description,
 			due_date: dueDate || null,
 			estimated_effort: estimatedEffort || null,
+			parent_task: parentTask === "" ? null : parentTask,
+			task_path: "", // task_path is assigned by the backend
 		};
 
 		if (initialData) {
@@ -140,6 +153,27 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit, initialData }) => {
 						</Select>
 					</FormControl>
 				)}
+				<FormControl fullWidth margin="normal" sx={formElementStyles}>
+					<InputLabel id="parent-task-label">親タスク</InputLabel>
+					<Select
+						labelId="parent-task-label"
+						value={parentTask}
+						label="親タスク"
+						onChange={(e) => setParentTask(e.target.value as number | "")}
+						variant="outlined"
+					>
+						<MenuItem value="" sx={menuItemStyles}>
+							なし
+						</MenuItem>
+						{allTasks
+							.filter((task) => !initialData || task.id !== initialData.id)
+							.map((task) => (
+								<MenuItem key={task.id} value={task.id} sx={menuItemStyles}>
+									{task.id} – {task.title}
+								</MenuItem>
+							))}
+					</Select>
+				</FormControl>
 				<TextField
 					label="期日"
 					fullWidth
